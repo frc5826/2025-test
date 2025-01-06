@@ -1,10 +1,8 @@
 package frc.robot.subsystems;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d; 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -57,18 +55,7 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.driveFieldOriented(velocity);
     }
 
-    public Command buildPath (Pose2d goal, double endStateVelocity) {
 
-        PathConstraints constraints = new  PathConstraints(
-                1,
-                1,
-                1 * Math.PI,
-                2 * Math.PI);
-
-        Command path = AutoBuilder.pathfindToPose(goal, constraints, 0);
-
-        return path;
-    }
 
     public ChassisSpeeds getVel() { return swerveDrive.getFieldVelocity(); }
 

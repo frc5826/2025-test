@@ -5,7 +5,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.wpilibj.XboxController;
 
 /**
@@ -25,8 +24,5 @@ public final class Constants
 
     public static final double teleDriveDeadband = 0.2;
     public static final double turnDeadband = 0.8;
-
-    public static final PIDConstants drivePID = new PIDConstants(4, 0, 0);
-    public static final PIDConstants turnPID = new PIDConstants(1, 0, 0);
 
 }
