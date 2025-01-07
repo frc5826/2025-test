@@ -7,11 +7,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d; 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.localization.Localization;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveParser;
@@ -25,7 +25,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public double maximumSpeed = Constants.maxVelocity;
 
-    public SwerveSubsystem() {
+    public SwerveSubsystem(Localization locatization) {
         double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(
                 12.8, 1);
 
@@ -70,7 +70,9 @@ public class SwerveSubsystem extends SubsystemBase {
         return path;
     }
 
-    public Pose2d getPose()
+    public ChassisSpeeds getVel() { return swerveDrive.getFieldVelocity(); }
+
+    public Pose2d getYAGSLPose()
     {
         return swerveDrive.getPose();
     }
@@ -103,6 +105,5 @@ public class SwerveSubsystem extends SubsystemBase {
     public double getDriveBaseRadius() {
         return swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters();
     }
-
 
 }

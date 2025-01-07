@@ -18,7 +18,7 @@
 //    {
 //        return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
 //    }
-//    
+//
 //
 //    private Autos()
 //    {

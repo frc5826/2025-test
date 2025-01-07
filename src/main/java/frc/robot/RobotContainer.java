@@ -6,7 +6,8 @@
 package frc.robot;
 
 
-
+import frc.robot.localization.Localization;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,10 +18,22 @@ package frc.robot;
 public class RobotContainer
 {
 
-    
+    public final Localization locatization = new Localization();
+
+    public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(locatization);
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer()
     {
+    }
+
+    public void prePeriodic() {
+        locatization.move();
+        locatization.measure(swerveSubsystem);
+    }
+
+    public void postPeriodic() {
+
     }
     
     
