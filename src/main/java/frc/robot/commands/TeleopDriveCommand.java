@@ -45,8 +45,9 @@ public class TeleopDriveCommand extends Command {
 
         ChassisSpeeds speeds = new ChassisSpeeds(x * swerveSubsystem.maximumSpeed, y * swerveSubsystem.maximumSpeed, turnPID.calculate());
 
-        swerveSubsystem.driveFieldOriented(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, Rotation2d.fromDegrees(0)));
-
+        //TODO
+//        swerveSubsystem.driveFieldOriented(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, Rotation2d.fromDegrees(0)));
+        swerveSubsystem.driveFieldOriented(new ChassisSpeeds(x,y,0));
         if (xbox.getAButtonPressed()) {
             swerveSubsystem.zeroGyro();
         }

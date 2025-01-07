@@ -6,6 +6,9 @@
 package frc.robot;
 
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.localization.Localization;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -26,6 +29,9 @@ public class RobotContainer
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer()
     {
+
+        CommandScheduler.getInstance().setDefaultCommand(swerveSubsystem,new TeleopDriveCommand(swerveSubsystem));
+
     }
 
     public void prePeriodic() {

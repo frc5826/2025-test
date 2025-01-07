@@ -28,7 +28,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 12.8, 1);
 
         double driveConversionFactor = SwerveMath.calculateMetersPerRotation(
-                Units.inchesToMeters(4), 8.14, 1);
+                Units.inchesToMeters(4), 6.12, 1);
 
         try {
             swerveDrive = new SwerveParser(new File(Filesystem.getDeployDirectory() + "/swerve")).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
