@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -39,7 +40,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
 
-        resetOdometry(new Pose2d(4.7, 3.5, new Rotation2d()));
+        resetOdometry(new Pose2d(0, 0, new Rotation2d()));
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative)
@@ -55,11 +56,9 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.driveFieldOriented(velocity);
     }
 
+    public ChassisSpeeds getOdoVel() { return swerveDrive.getFieldVelocity(); }
 
-
-    public ChassisSpeeds getVel() { return swerveDrive.getFieldVelocity(); }
-
-    public Pose2d getYAGSLPose()
+    public Pose2d getOdoPose()
     {
         return swerveDrive.getPose();
     }
@@ -83,14 +82,4 @@ public class SwerveSubsystem extends SubsystemBase {
     {
         swerveDrive.resetOdometry(stuff);
     }
-
-    public ChassisSpeeds getRobotVelocity()
-    {
-        return swerveDrive.getRobotVelocity();
-    }
-
-    public double getDriveBaseRadius() {
-        return swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters();
-    }
-
 }
