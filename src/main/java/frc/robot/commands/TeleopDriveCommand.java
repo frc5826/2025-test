@@ -44,17 +44,17 @@ public class TeleopDriveCommand extends Command {
             targetAngle = Rotation2d.fromRadians(Math.atan2(rx, ry));
         }
 
-        ChassisSpeeds speeds = new ChassisSpeeds(x * swerveSubsystem.maximumSpeed, y * swerveSubsystem.maximumSpeed, turnPID.calculate());
+        ChassisSpeeds speeds = new ChassisSpeeds(x * swerveSubsystem.maximumSpeed * 0.3, y * swerveSubsystem.maximumSpeed * 0.3, turnPID.calculate());
 
         //TODO
         swerveSubsystem.driveFieldOriented(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, Rotation2d.fromDegrees(0)));
-//        swerveSubsystem.driveFieldOriented(new ChassisSpeeds(x*maxVelocity,y*maxVelocity,r*maxAngularVelocity));
-        if (xbox.getAButtonPressed()) {
-            swerveSubsystem.zeroGyro();
-        }
+//        swerveSubsystem.driveFieldOriented(new ChassisSpeeds(x*maxVelocity, y*maxVelocity, r * maxAngularVelocity));
+//        if (xbox.getAButtonPressed()) {
+//            swerveSubsystem.zeroGyro();
+//        }
     }
 
     private double getTurnDiff() {
-        return targetAngle.minus(swerveSubsystem.getHeading()).minus(Rotation2d.fromDegrees(180)).getRadians();
+        return targetAngle.minus(swerveSubsystem.getIMUYaw()).minus(Rotation2d.fromDegrees(180)).getRadians();
     }
 }

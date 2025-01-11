@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public final class Constants
 {
-    public static final double maxVelocity = 5.05968;
+    public static final double maxVelocity = 5.05968; //DON'T CHANGE!!!!!!!!!!!!!!!!!!!!!!!
     public static final double maxAngularVelocity = 5;
 
     public static final XboxController xbox = new XboxController(1);

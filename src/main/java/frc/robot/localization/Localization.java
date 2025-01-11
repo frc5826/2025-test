@@ -3,6 +3,11 @@ package frc.robot.localization;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.subsystems.SwerveSubsystem;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -17,33 +22,39 @@ public class Localization {
 
     private final Timer timer;
 
+    private Field2d field;
+
     public Localization() {
         kalmanFilter = new KalmanFilter(new MultivariateNormalDistribution(new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0}, initCovar()));
 
-        this.measVar = new Variances(0, 0, 0, 0, 0, 0);
+        this.measVar = new Variances(0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
 
         timer = new Timer();
+
+        field = new Field2d();
+        setupField();
     }
 
     public void move() {
         kalmanFilter.move(timer.get());
-        timer.reset();
+        timer.restart();
     }
 
     public void measure(SwerveSubsystem s) {
-        RealVector zOdo = MatrixUtils.createRealVector(new double[]{0, 0, 0,
+        RealVector zOdo = MatrixUtils.createRealVector(new double[]{
+                kalmanFilter.getX().getEntry(0), kalmanFilter.getX().getEntry(1), s.getIMUYaw().getRadians(),
                 s.getOdoVel().vxMetersPerSecond, s.getOdoVel().vyMetersPerSecond, s.getOdoVel().omegaRadiansPerSecond,
-                0, 0, 0});
+                s.getAcc().get().getX(), s.getAcc().get().getY(), kalmanFilter.getX().getEntry(8)});
 
         RealMatrix ROdo = MatrixUtils.createRealMatrix(new double[][]{
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, measVar.rPos(), 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, measVar.xyVel(), 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, measVar.xyVel(), 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, measVar.rVel(), 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, measVar.xyAcc(), 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, measVar.xyAcc(), 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
         });
 
@@ -61,17 +72,38 @@ public class Localization {
         return pose;
     }
 
+    public void updateField() {
+        field.setRobotPose(getPose());
+    }
+
+    private void setupField() {
+        ShuffleboardTab tab = Shuffleboard.getTab("field");
+
+        field = new Field2d();
+        tab.add(field)
+                .withPosition(2,0)
+                .withSize(5,3);
+
+        ShuffleboardLayout position = tab.getLayout("Robot position", BuiltInLayouts.kList)
+                .withPosition(0,0)
+                .withSize(2,2);
+
+        position.addDouble("Robot X", ()-> getPose().getX());
+        position.addDouble("Robot Y", ()-> getPose().getY());
+        position.addDouble("Robot rotation", ()-> getPose().getRotation().getDegrees());
+    }
+
     private static double[][] initCovar() {
         return new double[][]{
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0}, };
+                {0.1, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0.1, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0.1, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0.1, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0.1, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0.1, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0.1, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0.1, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0.1}};
     }
 
     public void reset() {
