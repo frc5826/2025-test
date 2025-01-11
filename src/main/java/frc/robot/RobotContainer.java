@@ -6,7 +6,6 @@
 package frc.robot;
 
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.localization.Localization;
@@ -22,9 +21,9 @@ public class RobotContainer
 {
     
 
-    public final Localization locatization = new Localization();
+    public final Localization localization = new Localization();
 
-    public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(locatization);
+    public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(localization);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer()
@@ -35,8 +34,8 @@ public class RobotContainer
     }
 
     public void prePeriodic() {
-        locatization.move();
-        locatization.measure(swerveSubsystem);
+        localization.move();
+        localization.measure(swerveSubsystem);
     }
 
     public void postPeriodic() {
