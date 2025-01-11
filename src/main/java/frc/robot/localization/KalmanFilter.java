@@ -12,30 +12,34 @@ class KalmanFilter {
 
     private RealMatrix Q; //Movement covariance of the process noise
 
+    private RealMatrix H; //Maps state to measurement
+
     //Used if we don't supply a B and u vector
     private RealMatrix defaultB; //Control inputs transition
     private RealVector defaultU; //Control inputs
 
-    private Variances var;
+    private final Variances moveVar;
 
     public KalmanFilter(MultivariateNormalDistribution initial) {
         this.x = MatrixUtils.createRealVector(initial.getMeans());
         this.P = initial.getCovariances();
 
-        this.var = new Variances(0, 0, 0, 0, 0, 0);
+        this.moveVar = new Variances(0, 0, 0, 0, 0, 0);
 
         this.Q = MatrixUtils.createRealMatrix(new double[][]{
                 //X pos variance
-                {var.xyPos(), 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, var.xyPos(), 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, var.rPos(), 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, var.xyVel(), 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, var.xyVel(), 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, var.rVel(), 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, var.xyAcc(), 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, var.xyAcc(), 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, var.rAcc()},
+                {moveVar.xyPos(), 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, moveVar.xyPos(), 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, moveVar.rPos(), 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, moveVar.xyVel(), 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, moveVar.xyVel(), 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, moveVar.rVel(), 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, moveVar.xyAcc(), 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, moveVar.xyAcc(), 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, moveVar.rAcc()},
         });
+
+        this.H = MatrixUtils.createRealIdentityMatrix(9);
 
         this.defaultB = MatrixUtils.createRealIdentityMatrix(this.x.getDimension());
         this.defaultU = MatrixUtils.createRealVector(new double[this.x.getDimension()]);
@@ -48,11 +52,11 @@ class KalmanFilter {
         P = F.multiply(P).multiply(F.transpose()).add(Q);
     }
 
-    public void move(double deltaTime, RealMatrix Q){
-        this.move(deltaTime, defaultB, defaultU, Q);
+    public void move(double deltaTime){
+        this.move(deltaTime, defaultB, defaultU, this.Q);
     }
 
-    public void measure(RealMatrix H, RealMatrix R, RealVector z) {
+    public void measure(RealMatrix R, RealVector z) {
         RealMatrix S = H.multiply(P).multiply(H.transpose()).add(R);
         RealMatrix K = P.multiply(H.transpose()).multiply(MatrixUtils.inverse(S));
         RealVector y = z.subtract((H.operate(x)));
@@ -79,5 +83,9 @@ class KalmanFilter {
 
     public MultivariateNormalDistribution getEstimate() {
         return new MultivariateNormalDistribution(x.toArray(), P.getData());
+    }
+
+    public RealVector getX() {
+        return x;
     }
 }
