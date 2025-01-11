@@ -6,11 +6,8 @@
 package frc.robot;
 
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -31,9 +28,9 @@ public class RobotContainer
 {
     
 
-    public final Localization locatization = new Localization();
+    public final Localization localization = new Localization();
 
-    public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(locatization);
+    public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(localization);
 
     private int counter;
 
@@ -62,14 +59,14 @@ public class RobotContainer
 
         new Trigger(xbox::getBackButtonPressed).onTrue(new InstantCommand(swerveSubsystem::zeroGyro));
 
-        new Trigger(xbox::getStartButtonPressed).onTrue(new InstantCommand(locatization::reset));
+        new Trigger(xbox::getStartButtonPressed).onTrue(new InstantCommand(localization::reset));
 
     }
 
     public void prePeriodic() {
-        locatization.move();
-        locatization.measure(swerveSubsystem);
-        locatization.updateField();
+        localization.move();
+        localization.measure(swerveSubsystem);
+        localization.updateField();
     }
 
     public void postPeriodic() {
