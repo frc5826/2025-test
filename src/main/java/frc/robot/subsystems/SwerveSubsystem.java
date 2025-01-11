@@ -51,6 +51,10 @@ public class SwerveSubsystem extends SubsystemBase {
                 false);
     }
 
+    public Rotation2d getIMUYaw() {
+        return swerveDrive.getYaw();
+    }
+
     public void driveFieldOriented(ChassisSpeeds velocity)
     {
         swerveDrive.driveFieldOriented(velocity);
@@ -66,11 +70,6 @@ public class SwerveSubsystem extends SubsystemBase {
     public void driveRobotOriented(ChassisSpeeds velocity)
     {
         swerveDrive.drive(velocity);
-    }
-
-    public Rotation2d getHeading()
-    {
-        return swerveDrive.getYaw();
     }
 
     public void zeroGyro()
