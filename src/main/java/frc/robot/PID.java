@@ -1,10 +1,11 @@
 package frc.robot;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.networktables.NTSendable;
 import edu.wpi.first.networktables.NTSendableBuilder;
 
 import java.util.function.DoubleSupplier;
-
+@Logged
 public class PID implements NTSendable {
     private double P,I,D;
     double previous_error, integral = 0;

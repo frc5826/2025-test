@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.PID;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -46,8 +47,8 @@ public class TeleopDriveCommand extends Command {
         ChassisSpeeds speeds = new ChassisSpeeds(x * swerveSubsystem.maximumSpeed, y * swerveSubsystem.maximumSpeed, turnPID.calculate());
 
         //TODO
-//        swerveSubsystem.driveFieldOriented(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, Rotation2d.fromDegrees(0)));
-        swerveSubsystem.driveFieldOriented(new ChassisSpeeds(x,y,0));
+        swerveSubsystem.driveFieldOriented(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, Rotation2d.fromDegrees(0)));
+//        swerveSubsystem.driveFieldOriented(new ChassisSpeeds(x*maxVelocity,y*maxVelocity,r*maxAngularVelocity));
         if (xbox.getAButtonPressed()) {
             swerveSubsystem.zeroGyro();
         }
