@@ -1,8 +1,10 @@
 package frc.robot.math;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.NTSendable;
+import edu.wpi.first.networktables.NTSendableBuilder;
 
-public class ElevatorController {
+public class ElevatorController implements NTSendable {
 
     private double V, G, A;
     private TrapezoidProfile profile;
@@ -40,5 +42,32 @@ public class ElevatorController {
 
     }
 
+    private double getV() {
+        return V;
+    }
 
+    private double getG() {
+        return G;
+    }
+
+    private void setV(double v) {
+        V = v;
+    }
+
+    private void setG(double g) {
+        G = g;
+    }
+
+    private double getSetPoint() {
+        return setPoint.position;
+    }
+
+    @Override
+    public void initSendable(NTSendableBuilder builder) {
+
+        builder.setSmartDashboardType("5826-ElevatorController");
+        builder.addDoubleProperty("V", this::getV, this::setV );
+        builder.addDoubleProperty("G", this::getG, this::setG);
+        builder.addDoubleProperty("setPoint", this::getSetPoint, null);
+    }
 }

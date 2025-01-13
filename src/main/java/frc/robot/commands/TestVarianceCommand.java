@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.localization.Localization;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -10,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-public class TestVarianceCommand extends Command {
+public class TestVarianceCommand extends LoggedCommand {
 
     private double wheelVel;
 
@@ -42,6 +41,7 @@ public class TestVarianceCommand extends Command {
 
     @Override
     public void initialize() {
+        super.initialize();
         speeds.clear();
     }
 

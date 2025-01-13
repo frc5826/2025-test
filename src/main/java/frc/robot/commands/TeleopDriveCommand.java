@@ -8,7 +8,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 import static frc.robot.Constants.*;
 
-public class TeleopDriveCommand extends Command {
+public class TeleopDriveCommand extends LoggedCommand {
 
     private final SwerveSubsystem swerveSubsystem;
 

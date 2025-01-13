@@ -25,7 +25,7 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import java.io.File;
 import java.util.Optional;
 
-public class SwerveSubsystem extends SubsystemBase {
+public class SwerveSubsystem extends LoggedSubsystem {
 
     private final SwerveDrive swerveDrive;
 
