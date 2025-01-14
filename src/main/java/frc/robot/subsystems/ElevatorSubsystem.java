@@ -16,19 +16,19 @@ public class ElevatorSubsystem extends LoggedSubsystem {
 
     private PID elevatorPID = new PID(cElevatorP, cElevatorI, cElevatorD, cElevatorMax, cElevatorMin, 0, this::getPos);
     private ElevatorController controller = new ElevatorController(cElevatorV, cElevatorG, cElevatorMaxVelocity, cElevatorMaxAcceleration, cElevatorMin, cElevatorMax, elevatorPID );
-    private C motor, motorFollower;
+    //private  motor, motorFollower;
 
     public ElevatorSubsystem(){
         SmartDashboard.putData("elevator/PID", elevatorPID);
         SmartDashboard.putData("elevator/Controller", controller);
-        motorFollower.follo
+        //motorFollower.follow
     }
 
     @Override
     public void periodic() {
 
         double speed = controller.calculate(0.02);
-        motor.set(speed);
+       // motor.set(speed);
 
     }
 
