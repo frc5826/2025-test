@@ -25,4 +25,14 @@ public final class Constants
     public static final double teleDriveDeadband = 0.2;
     public static final double turnDeadband = 0.8;
 
+    public static final double cElevatorP = 0;
+    public static final double cElevatorI = 0;
+    public static final double cElevatorD = 0;
+    public static final double cElevatorMin = 0;
+    public static final double cElevatorMax = 0;
+    public static final double cElevatorV = 0;
+    public static final double cElevatorG = 0;
+    public static final double cElevatorMaxAcceleration = 0;
+    public static final double cElevatorMaxVelocity = 0;
+
 }

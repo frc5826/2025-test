@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TestVarianceCommand;
 import frc.robot.localization.Localization;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import static frc.robot.Constants.xbox;
@@ -31,6 +32,8 @@ public class RobotContainer
     public final Localization localization = new Localization();
 
     public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(localization);
+
+    public final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
     private int counter;
 

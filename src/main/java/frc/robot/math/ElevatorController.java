@@ -6,19 +6,21 @@ import edu.wpi.first.networktables.NTSendableBuilder;
 
 public class ElevatorController implements NTSendable {
 
-    private double V, G, A;
+    private double V, G;
     private TrapezoidProfile profile;
     private TrapezoidProfile.State setPoint;
     private TrapezoidProfile.State goal;
     private PID pid;
+    private double min, max;
+    private double output;
 
-    public ElevatorController(double V, double G, double A, double maxVelocity, double maxAcceleration, PID pid){
+
+    public ElevatorController(double V, double G, double maxVelocity, double maxAcceleration, double min, double max, PID pid){
 
 
         this.pid = pid;
         this.V = V;
         this.G = G;
-        this.A = A;
 
         profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
         setPoint = new TrapezoidProfile.State();
@@ -36,9 +38,11 @@ public class ElevatorController implements NTSendable {
 
     public double calculate(double deltaTime){
 
+
         setPoint = profile.calculate(deltaTime, setPoint, goal);
         pid.setGoal(setPoint.position);
-        return setPoint.velocity * V + setPoint.position * G + pid.calculate();
+        output = setPoint.velocity * V + setPoint.position * G + pid.calculate();
+        return Math.clamp(output, min, max);
 
     }
 
@@ -62,6 +66,14 @@ public class ElevatorController implements NTSendable {
         return setPoint.position;
     }
 
+    private double getOutput() {
+        return output;
+    }
+
+    private double getGoal() {
+        return goal.position;
+    }
+
     @Override
     public void initSendable(NTSendableBuilder builder) {
 
@@ -69,5 +81,7 @@ public class ElevatorController implements NTSendable {
         builder.addDoubleProperty("V", this::getV, this::setV );
         builder.addDoubleProperty("G", this::getG, this::setG);
         builder.addDoubleProperty("setPoint", this::getSetPoint, null);
+        builder.addDoubleProperty("Output", this::getOutput, null);
+        builder.addDoubleProperty("Goal", this::getGoal, null);
     }
 }
