@@ -27,7 +27,7 @@ public class Localization {
     public Localization() {
         kalmanFilter = new KalmanFilter(new MultivariateNormalDistribution(new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0}, initCovar()));
 
-        this.measVar = new Variances(0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
+        this.measVar = new Variances(0.1, 0.1, 10, 0.1, 0.1, 0.1);
 
         timer = new Timer();
 
@@ -42,14 +42,14 @@ public class Localization {
 
     public void measure(SwerveSubsystem s) {
         RealVector zOdo = MatrixUtils.createRealVector(new double[]{
-                kalmanFilter.getX().getEntry(0), kalmanFilter.getX().getEntry(1), s.getIMUYaw().getRadians(),
+                kalmanFilter.getX().getEntry(0), kalmanFilter.getX().getEntry(1), /*s.getIMUYaw().getRadians(),*/ kalmanFilter.getX().getEntry(2),
                 s.getOdoVel().vxMetersPerSecond, s.getOdoVel().vyMetersPerSecond, s.getOdoVel().omegaRadiansPerSecond,
                 s.getAcc().get().getX(), s.getAcc().get().getY(), kalmanFilter.getX().getEntry(8)});
 
         RealMatrix ROdo = MatrixUtils.createRealMatrix(new double[][]{
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, measVar.rPos(), 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, measVar.xyVel(), 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, measVar.xyVel(), 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, measVar.rVel(), 0, 0, 0},

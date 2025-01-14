@@ -5,6 +5,9 @@ import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 class KalmanFilter {
 
     private RealVector x; //Initial means
@@ -19,6 +22,8 @@ class KalmanFilter {
     private RealVector defaultU; //Control inputs
 
     private final Variances moveVar;
+
+    private final PrintWriter writer;
 
     public KalmanFilter(MultivariateNormalDistribution initial) {
         this.x = MatrixUtils.createRealVector(initial.getMeans());
@@ -43,13 +48,26 @@ class KalmanFilter {
 
         this.defaultB = MatrixUtils.createRealIdentityMatrix(this.x.getDimension());
         this.defaultU = MatrixUtils.createRealVector(new double[this.x.getDimension()]);
+
+        try {
+            writer = new PrintWriter("/tmp/kalman.log");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void move(double deltaTime, RealMatrix B, RealVector u, RealMatrix Q) {
         RealMatrix F = getF(deltaTime);
 
+        writer.println("MOVE----------");
+        writer.println("Starting x: " + x);
+        writer.println("Starting P: " + P);
+
         x = F.operate(x).add(B.operate(u));
         P = F.multiply(P).multiply(F.transpose()).add(Q);
+
+        writer.println("Ending x: " + x);
+        writer.println("Ending P: " + P);
     }
 
     public void move(double deltaTime){
@@ -57,6 +75,12 @@ class KalmanFilter {
     }
 
     public void measure(RealMatrix R, RealVector z) {
+
+        writer.println("MEASURE----------");
+        writer.println("Starting x: " + x);
+        writer.println("Starting P: " + P);
+        writer.println("Starting z: " + z);
+
         RealMatrix S = H.multiply(P).multiply(H.transpose()).add(R);
         RealMatrix K = P.multiply(H.transpose()).multiply(MatrixUtils.inverse(S));
         RealVector y = z.subtract((H.operate(x)));
@@ -65,6 +89,9 @@ class KalmanFilter {
         RealMatrix KH = K.multiply(H);
         RealMatrix I = MatrixUtils.createRealIdentityMatrix(KH.getRowDimension());
         P = I.subtract(KH).multiply(P);
+
+        writer.println("Ending x: " + x);
+        writer.println("Ending P: " + P);
     }
 
     //State transition matrix

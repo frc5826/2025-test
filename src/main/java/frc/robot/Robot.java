@@ -26,6 +26,8 @@ public class Robot extends TimedRobot
     
     private RobotContainer robotContainer;
 
+    private boolean teleop;
+
     /**
      * This method is run when the robot is first started up and should be used for any
      * initialization code.
@@ -33,6 +35,8 @@ public class Robot extends TimedRobot
     @Override
     public void robotInit()
     {
+        teleop = false;
+
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
@@ -50,7 +54,7 @@ public class Robot extends TimedRobot
     @Override
     public void robotPeriodic()
     {
-        robotContainer.prePeriodic();
+        robotContainer.prePeriodic(teleop);
 
         CommandScheduler.getInstance().run();
 
@@ -60,7 +64,9 @@ public class Robot extends TimedRobot
     
     /** This method is called once each time the robot enters Disabled mode. */
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        teleop = false;
+    }
     
     
     @Override
@@ -97,6 +103,8 @@ public class Robot extends TimedRobot
         {
             autonomousCommand.cancel();
         }
+
+        teleop = true;
     }
     
     

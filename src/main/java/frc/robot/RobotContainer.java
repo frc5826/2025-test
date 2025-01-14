@@ -7,6 +7,7 @@ package frc.robot;
 
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -66,10 +67,14 @@ public class RobotContainer
 
     }
 
-    public void prePeriodic() {
-        localization.move();
-        localization.measure(swerveSubsystem);
-        localization.updateField();
+    public void prePeriodic(boolean teleop) {
+
+        if (counter++ % 1 == 0 && teleop) {
+            localization.move();
+            localization.measure(swerveSubsystem);
+            localization.updateField();
+        }
+
     }
 
     public void postPeriodic() {
