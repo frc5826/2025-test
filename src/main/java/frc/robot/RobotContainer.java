@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.MoveTimeCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TestVarianceCommand;
 import frc.robot.localization.Localization;
@@ -62,17 +63,25 @@ public class RobotContainer
 
         new Trigger(cXbox::getBackButtonPressed).onTrue(new InstantCommand(swerveSubsystem::zeroGyro));
 
+        new Trigger(cXbox::getRightBumperButton).whileTrue(new MoveTimeCommand(
+                1,
+                new ChassisSpeeds(2, 0, 0),
+                swerveSubsystem,
+                localization));
+
+        new Trigger(cXbox::getBackButtonPressed).onTrue(new InstantCommand(swerveSubsystem::zeroGyro));
+
         new Trigger(cXbox::getStartButtonPressed).onTrue(new InstantCommand(localization::reset));
 
     }
 
     public void prePeriodic(boolean teleop) {
 
-        if (counter++ % 1 == 0 && teleop) {
-            localization.move();
-            localization.measure(swerveSubsystem);
-            localization.updateField();
-        }
+//        if (counter++ % 1 == 0 && teleop) {
+//            localization.move();
+//            localization.measure(swerveSubsystem);
+//            localization.updateField();
+//        }
 
     }
 

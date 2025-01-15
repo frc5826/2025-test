@@ -4,6 +4,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import com.studica.frc.AHRS;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -56,6 +58,8 @@ public class SwerveSubsystem extends LoggedSubsystem {
 
     public Optional<Translation3d> getAcc() { return swerveDrive.getAccel(); }
 
+    public Translation3d getAccFieldOrient() { return toFieldOriented(swerveDrive.getAccel().get()); }
+
     public void driveFieldOriented(ChassisSpeeds velocity)
     {
         swerveDrive.driveFieldOriented(velocity);
@@ -81,5 +85,9 @@ public class SwerveSubsystem extends LoggedSubsystem {
     public void resetOdometry(Pose2d stuff)
     {
         swerveDrive.resetOdometry(stuff);
+    }
+
+    private Translation3d toFieldOriented(Translation3d t) {
+        return t.rotateBy(new Rotation3d(getIMUYaw().times(-1)));
     }
 }

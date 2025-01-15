@@ -29,6 +29,7 @@ public class ElevatorSubsystem extends LoggedSubsystem {
         SparkMaxConfig config = new SparkMaxConfig();
         config.follow(motor);
         motorFollower.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+
     }
         //TODO is .02 correct???
     @Override
