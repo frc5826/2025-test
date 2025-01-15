@@ -7,7 +7,6 @@ package frc.robot;
 
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,7 +17,7 @@ import frc.robot.localization.Localization;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
-import static frc.robot.Constants.xbox;
+import static frc.robot.Constants.cXbox;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -46,24 +45,24 @@ public class RobotContainer
 
         CommandScheduler.getInstance().setDefaultCommand(swerveSubsystem,new TeleopDriveCommand(swerveSubsystem));
 
-        new Trigger(xbox::getAButton).whileTrue(new TestVarianceCommand(1,
+        new Trigger(cXbox::getAButton).whileTrue(new TestVarianceCommand(1,
                 ss -> ss.getOdoVel().vxMetersPerSecond,
                 s -> new ChassisSpeeds(s, 0, 0),
                 swerveSubsystem));
 
-        new Trigger(xbox::getBButton).whileTrue(new TestVarianceCommand(1,
+        new Trigger(cXbox::getBButton).whileTrue(new TestVarianceCommand(1,
                 ss -> ss.getOdoVel().vyMetersPerSecond,
                 s -> new ChassisSpeeds(0, s, 0),
                 swerveSubsystem));
 
-        new Trigger(xbox::getYButton).whileTrue(new TestVarianceCommand(1,
+        new Trigger(cXbox::getYButton).whileTrue(new TestVarianceCommand(1,
                 ss -> ss.getOdoVel().omegaRadiansPerSecond,
                 s -> new ChassisSpeeds(0, 0, s),
                 swerveSubsystem));
 
-        new Trigger(xbox::getBackButtonPressed).onTrue(new InstantCommand(swerveSubsystem::zeroGyro));
+        new Trigger(cXbox::getBackButtonPressed).onTrue(new InstantCommand(swerveSubsystem::zeroGyro));
 
-        new Trigger(xbox::getStartButtonPressed).onTrue(new InstantCommand(localization::reset));
+        new Trigger(cXbox::getStartButtonPressed).onTrue(new InstantCommand(localization::reset));
 
     }
 

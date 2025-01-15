@@ -33,7 +33,6 @@ public class CameraSystem {
     public CameraSystem() {
 
         try {
-            //TODO add apriltag layout
             fieldLayout = AprilTagFieldLayout.loadFromResource(Filesystem.getDeployDirectory() + "field/TestField2025.json");
             fieldLayout.setOrigin(AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
         } catch (IOException e) {

@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.studica.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -8,13 +7,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.localization.Localization;
 import swervelib.SwerveDrive;
@@ -29,7 +21,7 @@ public class SwerveSubsystem extends LoggedSubsystem {
 
     private final SwerveDrive swerveDrive;
 
-    public double maximumSpeed = Constants.maxVelocity;
+    public double maximumSpeed = Constants.cMaxVelocity;
 
     public SwerveSubsystem(Localization locatization) {
         double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(
