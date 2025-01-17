@@ -6,13 +6,13 @@ import edu.wpi.first.networktables.NTSendableBuilder;
 
 public class ElevatorController implements NTSendable {
 
-    private double V, G;
-    private TrapezoidProfile profile;
-    private TrapezoidProfile.State setPoint;
-    private TrapezoidProfile.State goal;
-    private PID pid;
-    private double min, max;
-    private double output;
+    protected double V, G;
+    protected TrapezoidProfile profile;
+    protected TrapezoidProfile.State setPoint;
+    protected TrapezoidProfile.State goal;
+    protected PID pid;
+    protected double min, max;
+    protected double output;
 
 
     public ElevatorController(double V, double G, double maxVelocity, double maxAcceleration, double min, double max, PID pid){

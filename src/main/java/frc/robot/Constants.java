@@ -29,8 +29,8 @@ public final class Constants
         public static final double cElevatorP = 0;
         public static final double cElevatorI = 0;
         public static final double cElevatorD = 0;
-        public static final double cElevatorMin = 0;
-        public static final double cElevatorMax = 0;
+        public static final double cElevatorMinOutput = 0;
+        public static final double cElevatorMaxOutput = 0;
         public static final double cElevatorV = 0;
         public static final double cElevatorG = 0;
         public static final double cElevatorMaxAcceleration = 0;
@@ -46,4 +46,19 @@ public final class Constants
 
     }
 
+    public static class Coralizer {
+
+        public static final double cWristMaxAngle = 0; //TODO
+        public static final double cWristMinAngle = 0; //TODO
+        public static final double cMotorToRadians = 0;
+        public static final double cWristOffset = 0;
+        public static final double cWristV = 0;
+        public static final double cWristG = 0;
+        public static final double cWristMaxVelocity = 0;
+        public static final double cWristMaxAcceleration = 0;
+        public static final double cWristMinOutput = 0;
+        public static final double cWristMaxOutput = 0;
+        public static final double cWristDeadband = 0;
+
+    }
 }

@@ -13,8 +13,8 @@ import static frc.robot.Constants.Elevator.*;
 
 public class ElevatorSubsystem extends LoggedSubsystem {
 
-    private PID elevatorPID = new PID(cElevatorP, cElevatorI, cElevatorD, cElevatorMax, cElevatorMin, 0, this::getPos);
-    private ElevatorController controller = new ElevatorController(cElevatorV, cElevatorG, cElevatorMaxVelocity, cElevatorMaxAcceleration, cElevatorMin, cElevatorMax, elevatorPID );
+    private PID elevatorPID = new PID(cElevatorP, cElevatorI, cElevatorD, cElevatorMaxOutput, cElevatorMinOutput, 0, this::getPos);
+    private ElevatorController controller = new ElevatorController(cElevatorV, cElevatorG, cElevatorMaxVelocity, cElevatorMaxAcceleration, cElevatorMinOutput, cElevatorMaxOutput, elevatorPID );
     private SparkMax motor, motorFollower;
     private Encoder encoder;
 
