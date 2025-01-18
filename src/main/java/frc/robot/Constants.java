@@ -5,6 +5,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 
 /**
@@ -21,6 +23,8 @@ public final class Constants
     public static final double cMaxAngularVelocity = 5;
 
     public static final XboxController cXbox = new XboxController(1);
+    public static final Joystick cButtonBoard = new Joystick(2);
+    static {DriverStation.silenceJoystickConnectionWarning(true);}
 
     public static final double cTeleDriveDeadband = 0.2;
     public static final double cTurnDeadband = 0.8;
@@ -35,13 +39,10 @@ public final class Constants
         public static final double cElevatorG = 0;
         public static final double cElevatorMaxAcceleration = 0;
         public static final double cElevatorMaxVelocity = 0;
-
-        public static final double cElevatorToEncoderConversion = 0;//TODO find actual value
-        public static final double cElevatorToMotorConversion = 0;//TODO find actual value
-
         public static final double cElevatorHeightMin = 0;//TODO
         public static final double cElevatorHeightMax = 0;//TODO
-
+        public static final double cElevatorToEncoderConversion = 0;//TODO find actual value
+        public static final double cElevatorToMotorConversion = 0;//TODO find actual value
         public static final double cElevatorDeadband = 0;
 
     }
@@ -50,7 +51,6 @@ public final class Constants
 
         public static final double cWristMaxAngle = 0; //TODO
         public static final double cWristMinAngle = 0; //TODO
-        public static final double cMotorToRadians = 0;
         public static final double cWristOffset = 0;
         public static final double cWristV = 0;
         public static final double cWristG = 0;
@@ -59,6 +59,26 @@ public final class Constants
         public static final double cWristMinOutput = 0;
         public static final double cWristMaxOutput = 0;
         public static final double cWristDeadband = 0;
+        public static final double cMotorToRadians = 0;
+
 
     }
+
+    public static class Intake{
+
+        public static final double cIntakeMaxAngle = 0;
+        public static final double cIntakeMinAngle = 0;
+        public static final double cIntakeOffset = 0;
+        public static final double cIntakeV = 0;
+        public static final double cIntakeG = 0;
+        public static final double cIntakeMaxVelocity = 0;
+        public static final double cIntakeMaxAcceleration = 0;
+        public static final double cIntakeMinOutput = 0;
+        public static final double cIntakeMaxOutput = 0;
+        public static final double cIntakeDeadband = 0;
+        public static final double cMotorToRadians = 0;
+
+    }
+
 }
+

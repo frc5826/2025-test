@@ -9,7 +9,6 @@ import frc.robot.math.ArmController;
 import frc.robot.math.PID;
 import static frc.robot.Constants.Coralizer.*;
 
-
 public class CoralizerWristSubsystem extends LoggedSubsystem{
 
     private SparkMax motor;
