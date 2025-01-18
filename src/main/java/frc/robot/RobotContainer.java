@@ -7,6 +7,8 @@ package frc.robot;
 
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -34,9 +36,11 @@ public class RobotContainer
 
     public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(localization);
 
-    public final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+//    public final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
     private int counter;
+
+    private final ShuffleboardTab kinematicsTab;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer()
@@ -73,6 +77,16 @@ public class RobotContainer
 
         new Trigger(cXbox::getStartButtonPressed).onTrue(new InstantCommand(localization::reset));
 
+
+        this.kinematicsTab = Shuffleboard.getTab("kinematics");
+        this.kinematicsTab.addDouble("Xv", () -> this.swerveSubsystem.getOdoVel().vxMetersPerSecond);
+        this.kinematicsTab.addDouble("Yv", () -> this.swerveSubsystem.getOdoVel().vyMetersPerSecond);
+        this.kinematicsTab.addDouble("Hv", () -> this.swerveSubsystem.getOdoVel().omegaRadiansPerSecond);
+
+        this.kinematicsTab.addDouble("Xa", () -> this.swerveSubsystem.getAcc().get().getX());
+        this.kinematicsTab.addDouble("Ya", () -> this.swerveSubsystem.getAcc().get().getY());
+        this.kinematicsTab.addDouble("Za", () -> this.swerveSubsystem.getAcc().get().getZ());
+
     }
 
     public void prePeriodic(boolean teleop) {
@@ -86,6 +100,7 @@ public class RobotContainer
     }
 
     public void postPeriodic() {
+
 
     }
     
