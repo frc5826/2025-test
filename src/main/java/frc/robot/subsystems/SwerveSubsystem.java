@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.localization.Localization;
 import swervelib.SwerveDrive;
@@ -23,7 +24,9 @@ public class SwerveSubsystem extends LoggedSubsystem {
 
     private final SwerveDrive swerveDrive;
 
-    public double maximumSpeed = Constants.cMaxVelocity;
+    private double maximumSpeed = Constants.cMaxVelocity;
+
+    private Rotation2d targetAngle = new Rotation2d();
 
     public SwerveSubsystem(Localization locatization) {
         double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(
@@ -40,6 +43,7 @@ public class SwerveSubsystem extends LoggedSubsystem {
         swerveDrive.setHeadingCorrection(false);
 
         SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
+        SmartDashboard.putData("/drive/ahrs",(AHRS)swerveDrive.getGyro().getIMU());
 
         resetOdometry(new Pose2d(0, 0, new Rotation2d()));
     }
@@ -56,9 +60,16 @@ public class SwerveSubsystem extends LoggedSubsystem {
         return swerveDrive.getYaw();
     }
 
-    public Optional<Translation3d> getAcc() { return swerveDrive.getAccel(); }
+    public Optional<Translation3d> getAcc() {
+        if(swerveDrive.getAccel().isPresent()) {
+            var t = swerveDrive.getAccel().get()
+                    .rotateBy(((AHRS)swerveDrive.getGyro().getIMU()).getRotation3d().unaryMinus())
+                    .rotateBy(swerveDrive.getGyroRotation3d().unaryMinus());
+            return Optional.of(new Translation3d(t.getX(),t.getY(),t.getZ()));
+        } else
+            return Optional.empty();
+    }
 
-    public Translation3d getAccFieldOrient() { return toFieldOriented(swerveDrive.getAccel().get()); }
 
     public void driveFieldOriented(ChassisSpeeds velocity)
     {
@@ -79,7 +90,16 @@ public class SwerveSubsystem extends LoggedSubsystem {
 
     public void zeroGyro()
     {
+        targetAngle = new Rotation2d();
         swerveDrive.zeroGyro();
+    }
+
+    public Rotation2d getTargetAngle() {
+        return targetAngle;
+    }
+
+    public void setTargetAngle(Rotation2d targetAngle) {
+        this.targetAngle = targetAngle;
     }
 
     public void resetOdometry(Pose2d stuff)

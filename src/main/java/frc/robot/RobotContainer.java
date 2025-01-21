@@ -90,13 +90,11 @@ public class RobotContainer
     }
 
     public void prePeriodic(boolean teleop) {
-
-//        if (counter++ % 1 == 0 && teleop) {
-//            localization.move();
-//            localization.measure(swerveSubsystem);
-//            localization.updateField();
-//        }
-
+        if(teleop) {
+            localization.move();
+            localization.measure(swerveSubsystem);
+            localization.updateField();
+        }
     }
 
     public void postPeriodic() {

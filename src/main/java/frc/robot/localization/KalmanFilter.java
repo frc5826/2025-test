@@ -95,15 +95,15 @@ class KalmanFilter {
         MeasureMetric mem = new MeasureMetric(preMeasureX, preMeasureP, x.copy(), P.copy(), z.copy(), R.copy());
 
         Metric m = new Metric(System.currentTimeMillis(), mm, mem, new TruthMetric(List.of()));
-        try {
-            FileWriter fw = new FileWriter("/tmp/kalman/" + m.time() + ".metric");
-            gson.toJson(m, fw);
-            fw.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            mm = null;
-        }
+//        try {
+//            FileWriter fw = new FileWriter("/tmp/kalman/" + m.time() + ".metric");
+//            gson.toJson(m, fw);
+//            fw.close();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        } finally {
+//            mm = null;
+//        }
     }
 
     //State transition matrix

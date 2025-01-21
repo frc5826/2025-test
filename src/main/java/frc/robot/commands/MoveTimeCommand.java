@@ -43,13 +43,6 @@ public class MoveTimeCommand extends Command {
 
     @Override
     public void execute() {
-        localization.move();
-        localization.measure(swerveSubsystem);
-        localization.updateField();
-
-//        System.out.println("X Acceleration: " + swerveSubsystem.getAccFieldOrient().getX());
-//        System.out.println("Y Acceleration: " + swerveSubsystem.getAccFieldOrient().getY());
-
         if (timer.get() <= moveSec) {
             swerveSubsystem.driveFieldOriented(speeds);
         }

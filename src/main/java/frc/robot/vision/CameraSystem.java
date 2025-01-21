@@ -33,11 +33,12 @@ public class CameraSystem {
     public CameraSystem() {
 
         try {
-            fieldLayout = AprilTagFieldLayout.loadFromResource(Filesystem.getDeployDirectory() + "field/TestField2025.json");
+            fieldLayout = new AprilTagFieldLayout(Filesystem.getDeployDirectory() + "/field/TestField2025.json");
             fieldLayout.setOrigin(AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
         } catch (IOException e) {
             fieldLayout = null;
             System.err.println("April Tag Field Layout Failed to Load");
+            e.printStackTrace();
         }
         cameras = List.of(
                 new Camera(new Translation3d(inchToMeter(7.75), inchToMeter(-4), inchToMeter(8.25)), new Rotation3d(Math.PI, -Math.PI / 4, 0), "alpha")
