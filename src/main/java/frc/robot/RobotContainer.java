@@ -17,7 +17,6 @@ import frc.robot.commands.MoveTimeCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TestVarianceCommand;
 import frc.robot.localization.Localization;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import static frc.robot.Constants.cXbox;
@@ -65,6 +64,12 @@ public class RobotContainer
                 s -> new ChassisSpeeds(0, 0, s),
                 swerveSubsystem));
 
+        new Trigger(cXbox::getRightBumperButton).whileTrue(new MoveTimeCommand(
+                1,
+                new ChassisSpeeds(2, 0, 0),
+                swerveSubsystem,
+                localization));
+
         new Trigger(cXbox::getBackButtonPressed).onTrue(new InstantCommand(swerveSubsystem::zeroGyro));
 
         new Trigger(cXbox::getRightBumperButton).whileTrue(new MoveTimeCommand(
@@ -90,11 +95,13 @@ public class RobotContainer
     }
 
     public void prePeriodic(boolean teleop) {
+
         if(teleop) {
             localization.move();
             localization.measure(swerveSubsystem);
             localization.updateField();
         }
+
     }
 
     public void postPeriodic() {

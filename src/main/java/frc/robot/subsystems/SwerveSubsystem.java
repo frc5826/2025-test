@@ -71,6 +71,8 @@ public class SwerveSubsystem extends LoggedSubsystem {
     }
 
 
+    public Translation3d getAccFieldOrient() { return toFieldOriented(swerveDrive.getAccel().get()); }
+
     public void driveFieldOriented(ChassisSpeeds velocity)
     {
         swerveDrive.driveFieldOriented(velocity);
