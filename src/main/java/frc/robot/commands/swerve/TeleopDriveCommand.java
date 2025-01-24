@@ -1,10 +1,12 @@
-package frc.robot.commands;
+package frc.robot.commands.swerve;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.robot.commands.LoggedCommand;
 import frc.robot.math.PID;
 import frc.robot.subsystems.SwerveSubsystem;
 
+import static frc.robot.Constants.Swerve.*;
 import static frc.robot.Constants.*;
 
 public class TeleopDriveCommand extends LoggedCommand {
@@ -22,8 +24,8 @@ public class TeleopDriveCommand extends LoggedCommand {
     @Override
     public void execute() {
 
-        double x = cXbox.getLeftY();
-        double y = cXbox.getLeftX();
+        double x = -cXbox.getLeftY();
+        double y = -cXbox.getLeftX();
 
         x = Math.abs(x) > cTeleDriveDeadband ? x : 0;
         y = Math.abs(y) > cTeleDriveDeadband ? y : 0;
@@ -40,15 +42,12 @@ public class TeleopDriveCommand extends LoggedCommand {
             swerveSubsystem.setTargetAngle( Rotation2d.fromRadians(Math.atan2(-rx, -ry)));
         }
 
-        ChassisSpeeds speeds = new ChassisSpeeds(x * cMaxVelocity * 0.3, y * cMaxVelocity * 0.3, turnPID.calculate());
+        ChassisSpeeds speeds = new ChassisSpeeds(x * cMaxVelocity * 0.3, y * cMaxVelocity * 0.3, -turnPID.calculate());
 
 
         swerveSubsystem.driveFieldOriented(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, Rotation2d.fromRadians(speeds.omegaRadiansPerSecond)));
 
         //swerveSubsystem.driveFieldOriented(new ChassisSpeeds(x*maxVelocity, y*maxVelocity, r * maxAngularVelocity));
-//        if (xbox.getAButtonPressed()) {
-//            swerveSubsystem.zeroGyro();
-//        }
     }
 
     private double getTurnDiff() {

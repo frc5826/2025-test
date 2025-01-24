@@ -64,7 +64,7 @@ public class Localization {
         }
 
 //        Velocity = wheels
-        ChassisSpeeds velocity = s.getOdoVel().unaryMinus();
+        ChassisSpeeds velocity = s.getOdoVel();
         zOdo.setEntry(3, velocity.vxMetersPerSecond);
         zOdo.setEntry(4, velocity.vyMetersPerSecond);
         zOdo.setEntry(5, velocity.omegaRadiansPerSecond);

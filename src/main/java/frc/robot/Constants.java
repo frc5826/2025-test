@@ -5,9 +5,11 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.math.PID;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -19,8 +21,6 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public final class Constants
 {
-    public static final double cMaxVelocity = 5.05968; //DON'T CHANGE!!!!!!!!!!!!!!!!!!!!!!!
-    public static final double cMaxAngularVelocity = 5;
 
     public static final XboxController cXbox = new XboxController(1);
     public static final Joystick cButtonBoard = new Joystick(2);
@@ -28,6 +28,14 @@ public final class Constants
 
     public static final double cTeleDriveDeadband = 0.2;
     public static final double cTurnDeadband = 0.8;
+
+    public static class  Swerve {
+        public static final double cMaxVelocity = 5.05968; //DON'T CHANGE!!!!!!!!!!!!!!!!!!!!!!!
+        public static final double cMaxAngularVelocity = 5;
+
+        public static final PIDConstants cDrivePID = new PIDConstants(5, 0, 0);
+        public static final PIDConstants cTurnPID = new PIDConstants(4, 0, .4);
+    }
 
     public static class Elevator {
         public static final double cElevatorP = 0;

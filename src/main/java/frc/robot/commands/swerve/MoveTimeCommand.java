@@ -1,12 +1,10 @@
-package frc.robot.commands;
+package frc.robot.commands.swerve;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.localization.Localization;
 import frc.robot.subsystems.SwerveSubsystem;
-import edu.wpi.first.wpilibj.Timer;
 
 public class MoveTimeCommand extends Command {
 
