@@ -9,7 +9,6 @@ import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.math.PID;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -22,6 +21,7 @@ import frc.robot.math.PID;
 public final class Constants
 {
 
+    public static final Joystick cJoystick= new Joystick(0);
     public static final XboxController cXbox = new XboxController(1);
     public static final Joystick cButtonBoard = new Joystick(2);
     static {DriverStation.silenceJoystickConnectionWarning(true);}
@@ -47,20 +47,20 @@ public final class Constants
         public static final int cElevatorEncoder2IDA = -1;
         public static final int cElevatorEncoder2IDB = -1;
 
-        public static final double cElevatorP = 0;
+        public static final double cElevatorP = 1;
         public static final double cElevatorI = 0;
         public static final double cElevatorD = 0;
-        public static final double cElevatorMinOutput = 0;
-        public static final double cElevatorMaxOutput = 0;
-        public static final double cElevatorV = 0;
-        public static final double cElevatorG = 0;
-        public static final double cElevatorMaxAcceleration = 0;
-        public static final double cElevatorMaxVelocity = 0;
+        public static final double cElevatorMinOutput = -0.2;
+        public static final double cElevatorMaxOutput = 0.2;
+        public static final double cElevatorV = 1;
+        public static final double cElevatorG = 1;
+        public static final double cElevatorMaxAcceleration = 1;
+        public static final double cElevatorMaxVelocity = 1;
         public static final double cElevatorHeightMin = 0;//TODO
-        public static final double cElevatorHeightMax = 0;//TODO
-        public static final double cElevatorToEncoderConversion = 0;//TODO find actual value
-        public static final double cElevatorToMotorConversion = 0;//TODO find actual value
-        public static final double cElevatorDeadband = 0;
+        public static final double cElevatorHeightMax = 2;//TODO
+        public static final double cElevatorClicksPerMeter = 17777;//TODO find actual value
+        public static final double cElevatorRPMtoMPS = 0.9753;//TODO find actual value
+        public static final double cElevatorDeadband = 0.01;
 
     }
 

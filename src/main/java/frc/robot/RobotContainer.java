@@ -17,13 +17,16 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.elevator.ElevatorPositionCommand;
 import frc.robot.commands.swerve.MoveTimeCommand;
 import frc.robot.commands.swerve.PathToCommand;
 import frc.robot.commands.swerve.TeleopDriveCommand;
 import frc.robot.commands.TestVarianceCommand;
 import frc.robot.localization.Localization;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
+import static frc.robot.Constants.cJoystick;
 import static frc.robot.Constants.cXbox;
 
 /**
@@ -40,6 +43,11 @@ public class RobotContainer
 
     public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(localization);
 
+    public final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+
+    public final ElevatorPositionCommand elevatorPositionCommand1 = new ElevatorPositionCommand(elevatorSubsystem, 0.01);
+    public final ElevatorPositionCommand elevatorPositionCommand2 = new ElevatorPositionCommand(elevatorSubsystem, 0.5);
+
 //    public final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
     private int counter;
@@ -53,6 +61,9 @@ public class RobotContainer
         SmartDashboard.putData(CommandScheduler.getInstance());
 
         CommandScheduler.getInstance().setDefaultCommand(swerveSubsystem,new TeleopDriveCommand(swerveSubsystem));
+
+        new Trigger(() -> cJoystick.getRawButton(3)).onTrue(elevatorPositionCommand1);
+        new Trigger(() -> cJoystick.getRawButton(4)).onTrue(elevatorPositionCommand2);
 
         setXboxBindings();
 
