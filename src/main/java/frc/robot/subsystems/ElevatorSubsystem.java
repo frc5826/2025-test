@@ -20,14 +20,14 @@ public class ElevatorSubsystem extends LoggedSubsystem {
 
     public ElevatorSubsystem(){
 
-        //TODO Device IDs
-        motor = new SparkMax(0, SparkLowLevel.MotorType.kBrushless);
-        motorFollower = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
-        encoder = new Encoder(1, 2);
+        motor = new SparkMax(cElevatorMotor1ID, SparkLowLevel.MotorType.kBrushless);
+        motorFollower = new SparkMax(cElevatorMotor2ID, SparkLowLevel.MotorType.kBrushless);
+        encoder = new Encoder(cElevatorEncoder1IDA, cElevatorEncoder1IDB);
         SmartDashboard.putData("elevator/PID", elevatorPID);
         SmartDashboard.putData("elevator/Controller", controller);
         SparkMaxConfig config = new SparkMaxConfig();
         config.follow(motor);
+        motorFollower.setInverted(true);
         motorFollower.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
     }
@@ -45,13 +45,12 @@ public class ElevatorSubsystem extends LoggedSubsystem {
         position = Math.clamp(position, cElevatorHeightMin, cElevatorHeightMax);
         controller.setGoal(getPos(), position, motor.getEncoder().getVelocity()*cElevatorToMotorConversion);
 
-
     }
 
 
     public double getPos(){
 
-        return encoder.getDistance()/cElevatorToEncoderConversion;
+        return encoder.get()/cElevatorToEncoderConversion;
 
     }
 
