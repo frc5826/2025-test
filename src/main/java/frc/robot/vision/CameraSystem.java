@@ -11,6 +11,7 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -27,7 +28,7 @@ public class CameraSystem {
     private static final double POSE_CUTOFF = 0.2;
     private AprilTagFieldLayout fieldLayout;
     private final List<Camera> cameras;
-    private DoubleLogEntry xLog, yLog, rotationLog;
+    private DoubleLogEntry xLog, yLog, rotationLog, ambiguityLog;
 
 
     public CameraSystem() {
@@ -48,6 +49,7 @@ public class CameraSystem {
         xLog = new DoubleLogEntry(log, "/robot/vision/position/x");
         yLog = new DoubleLogEntry(log, "/robot/vision/position/y");
         rotationLog = new DoubleLogEntry(log, "/robot/vision/position/rotation");
+        ambiguityLog = new DoubleLogEntry(log, "/robot/vision/ambiguity");
 
     }
 
@@ -69,6 +71,8 @@ public class CameraSystem {
                             xLog.append(robotPose.getX());
                             yLog.append(robotPose.getY());
                             rotationLog.append(robotPose.getRotation().getZ());
+                            ambiguityLog.append(target.getPoseAmbiguity());
+                            SmartDashboard.putNumber("Ambiguity", target.getPoseAmbiguity());
 
                             results.add(robotPose);
                         }
@@ -84,6 +88,10 @@ public class CameraSystem {
 
     }
 
+    public double getPoseAmbiguity() {
+        return ambiguityLog.getLastValue();
+    }
+
     private Pose3d getRobotLocation(Transform3d cameraToRobot, Transform3d aprilTagLocation,int aprilTagID){
         Optional<Pose3d> tagPose = fieldLayout.getTagPose(aprilTagID);
 
@@ -97,11 +105,7 @@ public class CameraSystem {
     return robotPose;
     }
 
-    private double inchToMeter(double inch) {
-
-        return inch * 0.0254;
-
-    }
+    private double inchToMeter(double inch) { return inch * 0.0254; }
 
 
     public static class Camera {

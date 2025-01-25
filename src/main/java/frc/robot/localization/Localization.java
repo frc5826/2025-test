@@ -80,15 +80,17 @@ public class Localization {
         ROdo.setEntry(2, 2, measVar.rPos());
 
         for(Pose3d p: cameras.getCameraMeasurements()) {
+            double ambiguity = cameras.getPoseAmbiguity();
+
             zOdo.setEntry(0, p.getX());
             zOdo.setEntry(1, p.getY());
 
-            ROdo.setEntry(0, 0, measVar.xyPos());
-            ROdo.setEntry(1, 1, measVar.xyPos());
+            ROdo.setEntry(0, 0, ambiguity);
+            ROdo.setEntry(1, 1, ambiguity);
 
             zOdo.setEntry(2, p.getRotation().getZ());
 
-            ROdo.setEntry(2, 2, measVar.rPos());
+            ROdo.setEntry(2, 2, ambiguity);
         }
 
         //for all you readings...

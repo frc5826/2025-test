@@ -93,7 +93,7 @@ public class RobotContainer
 
         new Trigger(cXbox::getYButton).whileTrue(new PathToCommand(new Pose2d(7.3, 5.02, new Rotation2d(0)), 0, constraints, swerveSubsystem));
 
-        new Trigger(cXbox::getBButton).whileTrue(new PathToCommand(new Pose2d(5.9, 3.18, new Rotation2d(0)), 0, constraints, swerveSubsystem));
+        new Trigger(cXbox::getBButton).whileTrue(new PathToCommand(new Pose2d(5.9, 3.18, new Rotation2d(Math.PI)), 0, constraints, swerveSubsystem));
 
         new Trigger(cXbox::getXButton).whileTrue(new RunCommand(()->swerveSubsystem.driveRobotOriented(new ChassisSpeeds(1,0,0)),swerveSubsystem));
     }

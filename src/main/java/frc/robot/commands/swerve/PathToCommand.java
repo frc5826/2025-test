@@ -6,11 +6,13 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.LoggedCommand;
+import frc.robot.math.MathHelper;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -43,16 +45,20 @@ public class PathToCommand extends LoggedCommand {
     public void initialize() {
         super.initialize();
 
-        List<Waypoint> points = PathPlannerPath.waypointsFromPoses(
-                swerveSubsystem.getLocalizationPose(),
-                goal
-        );
+        Pose2d start = swerveSubsystem.getLocalizationPose();
+        start = new Pose2d(start.getTranslation(), MathHelper.getAngleAtoB(start, goal));
+
+        Pose2d end = new Pose2d(goal.getTranslation(), MathHelper.getAngleAtoB(goal, start));
+
+        List<Waypoint> points = PathPlannerPath.waypointsFromPoses(start, end);
 
         PathPlannerPath path = new PathPlannerPath(
                 points,
                 constraints,
                 null,
                 new GoalEndState(endVel, goal.getRotation()));
+
+        swerveSubsystem.setTargetAngle(goal.getRotation());
 
         pathCommand = AutoBuilder.followPath(path);
 
