@@ -83,11 +83,13 @@ public class RobotContainer
     }
 
     private void setXboxBindings() {
+       //new Trigger(cXbox::getRightBumperButtonPressed).onTrue(new InstantCommand( () -> swerveSubsystem.offsetGyro()));
+
         new Trigger(cXbox::getBackButtonPressed).onTrue(new InstantCommand(swerveSubsystem::zeroGyro));
 
         new Trigger(cXbox::getStartButtonPressed).onTrue(new InstantCommand(localization::reset));
 
-        PathConstraints constraints = new PathConstraints(1, 1, Math.PI, Math.PI);
+        PathConstraints constraints = new PathConstraints(3, 4, Math.PI * 3, Math.PI * 3);
 
         new Trigger(cXbox::getAButton).whileTrue(new PathToCommand(new Pose2d(7.21, 1.88, new Rotation2d(0)), 0, constraints, swerveSubsystem));
 

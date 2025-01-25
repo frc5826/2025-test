@@ -121,6 +121,10 @@ public class SwerveSubsystem extends LoggedSubsystem {
         );
     }
 
+    public Rotation2d getRotationCorrected() {
+        return getIMUYaw().getRadians() < 0 ? getIMUYaw().plus(new Rotation2d(2 * Math.PI)) : getIMUYaw();
+    }
+
     public Pose2d getLocalizationPose() { return localization.getPose(); }
 
     public Translation3d getAccFieldOrient() { return toFieldOriented(swerveDrive.getAccel().get()); }
@@ -146,6 +150,10 @@ public class SwerveSubsystem extends LoggedSubsystem {
     {
         targetAngle = new Rotation2d();
         swerveDrive.zeroGyro();
+    }
+
+    public void offsetGyro(double offsetRad) {
+        swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, offsetRad));
     }
 
     public Rotation2d getTargetAngle() {

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.vision.CameraSystem;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
@@ -75,9 +76,13 @@ public class Localization {
 
         //Position
 
-        zOdo.setEntry(2, s.getOdoPose().getRotation().getRadians());
+        zOdo.setEntry(2, s.getRotationCorrected().getRadians());
+
+        SmartDashboard.putNumber("corrected gyro yaw", s.getRotationCorrected().getDegrees());
 
         ROdo.setEntry(2, 2, measVar.rPos());
+
+        cameras.getCameraMeasurements();
 
         for(Pose3d p: cameras.getCameraMeasurements()) {
             double ambiguity = cameras.getPoseAmbiguity();

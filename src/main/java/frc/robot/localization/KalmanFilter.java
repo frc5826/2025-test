@@ -1,6 +1,5 @@
 package frc.robot.localization;
 
-import com.google.gson.Gson;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -28,10 +27,6 @@ class KalmanFilter {
     private RealVector defaultU; //Control inputs
 
     private final Variances moveVar;
-
-    private MoveMetric mm;
-
-    private Gson gson = new Gson();
 
     public KalmanFilter(MultivariateNormalDistribution initial) {
         this.x = MatrixUtils.createRealVector(initial.getMeans());
@@ -65,14 +60,9 @@ class KalmanFilter {
     }
 
     private void move(double deltaTime, RealMatrix B, RealVector u, RealMatrix Q) {
-        RealVector preMoveX = x.copy();
-        RealMatrix preMoveP = P.copy();
-
         RealMatrix F = getF(deltaTime);
         x = F.operate(x).add(B.operate(u));
         P = F.multiply(P).multiply(F.transpose()).add(Q);
-
-        mm = new MoveMetric(preMoveX, preMoveP, x.copy(), P.copy(), Q.copy());
     }
 
     public void move(double deltaTime){
@@ -80,9 +70,6 @@ class KalmanFilter {
     }
 
     public void measure(RealMatrix R, RealVector z) {
-        RealVector preMeasureX = x.copy();
-        RealMatrix preMeasureP = P.copy();
-
         RealMatrix S = H.multiply(P).multiply(H.transpose()).add(R);
         RealMatrix K = P.multiply(H.transpose()).multiply(MatrixUtils.inverse(S));
         RealVector y = z.subtract((H.operate(x)));
@@ -91,20 +78,6 @@ class KalmanFilter {
         RealMatrix KH = K.multiply(H);
         RealMatrix I = MatrixUtils.createRealIdentityMatrix(KH.getRowDimension());
         P = I.subtract(KH).multiply(P);
-
-        MeasureMetric mem = new MeasureMetric(preMeasureX, preMeasureP, x.copy(), P.copy(), z.copy(), R.copy());
-
-        Metric m = new Metric(System.currentTimeMillis(), mm, mem, new TruthMetric(List.of()));
-
-//        try {
-//            FileWriter fw = new FileWriter("/tmp/kalman/" + m.time() + ".metric");
-//            gson.toJson(m, fw);
-//            fw.close();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        } finally {
-//            mm = null;
-//        }
     }
 
     //State transition matrix
