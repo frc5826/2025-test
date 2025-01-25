@@ -17,7 +17,6 @@ public class ElevatorController implements NTSendable {
 
     public ElevatorController(double V, double G, double maxVelocity, double maxAcceleration, double min, double max, PID pid){
 
-
         this.pid = pid;
         this.V = V;
         this.G = G;

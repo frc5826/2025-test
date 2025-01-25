@@ -38,6 +38,15 @@ public final class Constants
     }
 
     public static class Elevator {
+        public static final int cElevatorMotor1ID = 1;
+        public static final int cElevatorMotor2ID = 2;
+
+        //TODO Real values
+        public static final int cElevatorEncoder1IDA = 1;
+        public static final int cElevatorEncoder1IDB = 0;
+        public static final int cElevatorEncoder2IDA = -1;
+        public static final int cElevatorEncoder2IDB = -1;
+
         public static final double cElevatorP = 0;
         public static final double cElevatorI = 0;
         public static final double cElevatorD = 0;
