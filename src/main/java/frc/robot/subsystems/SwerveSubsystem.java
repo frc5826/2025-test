@@ -121,6 +121,10 @@ public class SwerveSubsystem extends LoggedSubsystem {
         );
     }
 
+    public void driveRotations(double rotations) {
+        swerveDrive.getModules()[0].getDriveMotor().getPosition();
+    }
+
     public Rotation2d getRotationCorrected() {
         return getIMUYaw().getRadians() < 0 ? getIMUYaw().plus(new Rotation2d(2 * Math.PI)) : getIMUYaw();
     }

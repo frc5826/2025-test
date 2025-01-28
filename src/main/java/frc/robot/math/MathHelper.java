@@ -9,4 +9,14 @@ public class MathHelper {
         return B.getTranslation().minus(A.getTranslation()).getAngle();
     }
 
+    public static double fixSpin(double angle) {
+        if(angle < -Math.PI){
+            angle += 2*Math.PI;
+        } else if (angle > Math.PI) {
+            angle -= 2*Math.PI;
+        }
+
+        return angle;
+    }
+
 }

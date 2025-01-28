@@ -82,7 +82,7 @@ public class Localization {
 
         ROdo.setEntry(2, 2, measVar.rPos());
 
-        cameras.getCameraMeasurements();
+        //cameras.getCameraMeasurements();
 
         for(Pose3d p: cameras.getCameraMeasurements()) {
             double ambiguity = cameras.getPoseAmbiguity();

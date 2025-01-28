@@ -13,10 +13,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.swerve.AccuratePathCommand;
 import frc.robot.commands.swerve.MoveTimeCommand;
 import frc.robot.commands.swerve.PathToCommand;
 import frc.robot.commands.swerve.TeleopDriveCommand;
@@ -89,15 +88,25 @@ public class RobotContainer
 
         new Trigger(cXbox::getStartButtonPressed).onTrue(new InstantCommand(localization::reset));
 
-        PathConstraints constraints = new PathConstraints(3, 4, Math.PI * 3, Math.PI * 3);
+        PathConstraints constraints = new PathConstraints(2, 4, Math.PI * 6, Math.PI * 6);
 
-        new Trigger(cXbox::getAButton).whileTrue(new PathToCommand(new Pose2d(7.21, 1.88, new Rotation2d(0)), 0, constraints, swerveSubsystem));
+        new Trigger(cXbox::getAButton).whileTrue(Commands.sequence(
+                (new PathToCommand(new Pose2d(7.28, 1.88, new Rotation2d(0)), 0, constraints, swerveSubsystem)),
+                new AccuratePathCommand(new Pose2d(7.28, 1.88, new Rotation2d()), swerveSubsystem)));
 
-        new Trigger(cXbox::getYButton).whileTrue(new PathToCommand(new Pose2d(7.3, 5.02, new Rotation2d(0)), 0, constraints, swerveSubsystem));
+        new Trigger(cXbox::getYButton).whileTrue(Commands.sequence(
+                new PathToCommand(new Pose2d(7.3, 5.02, new Rotation2d(0)), 0, constraints, swerveSubsystem),
+                new AccuratePathCommand(new Pose2d(7.3, 5.02, new Rotation2d()), swerveSubsystem)));
 
-        new Trigger(cXbox::getBButton).whileTrue(new PathToCommand(new Pose2d(5.9, 3.18, new Rotation2d(Math.PI)), 0, constraints, swerveSubsystem));
+        new Trigger(cXbox::getBButton).whileTrue(Commands.sequence(
+                new PathToCommand(new Pose2d(5.9, 3.18, new Rotation2d(Math.PI)), 0, constraints, swerveSubsystem),
+                new AccuratePathCommand(new Pose2d(5.9, 3.18, new Rotation2d(Math.PI)), swerveSubsystem)));
 
         new Trigger(cXbox::getXButton).whileTrue(new RunCommand(()->swerveSubsystem.driveRobotOriented(new ChassisSpeeds(1,0,0)),swerveSubsystem));
+
+        new Trigger(cXbox::getLeftBumperButtonPressed).onTrue(new AccuratePathCommand(
+                new Pose2d(7.28, 1.88, new Rotation2d()),
+                swerveSubsystem));
     }
     
     
