@@ -3,6 +3,7 @@ package frc.robot.vision;
 import com.revrobotics.spark.config.LimitSwitchConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -42,8 +43,8 @@ public class CameraSystem {
             e.printStackTrace();
         }
         cameras = List.of(
-                new Camera(new Translation3d(inchToMeter(7.75), inchToMeter(-4), inchToMeter(8.25)), new Rotation3d(Math.PI, -Math.PI / 4, 0), "alpha"),
-                new Camera(new Translation3d(inchToMeter(-9), inchToMeter(-7), inchToMeter(8.25)), new Rotation3d(0, -Math.PI / 6, Math.PI), "beta")
+                new Camera(new Translation3d(inchToMeter(7.75), inchToMeter(-4), inchToMeter(8.25)), new Rotation3d(Math.PI, -Math.PI / 4, 0), "alpha")
+                //new Camera(new Translation3d(inchToMeter(-9), inchToMeter(-7), inchToMeter(8.25)), new Rotation3d(0, -Math.PI / 6, Math.PI), "beta")
         );
 
         DataLog log = DataLogManager.getLog();
@@ -54,9 +55,9 @@ public class CameraSystem {
 
     }
 
-    public List<Pose3d> getCameraMeasurements() {
+    public List<Pair<Pose3d, Double>> getCameraMeasurements() {
 
-        LinkedList<Pose3d> results = new LinkedList<>();
+        LinkedList<Pair<Pose3d, Double>> results = new LinkedList<>();
 
         for (Camera camera : cameras) {
 
@@ -79,7 +80,7 @@ public class CameraSystem {
                             SmartDashboard.putNumber("Cameras/" + camera.getName() + "/yaw", robotPose.getRotation().getZ());
                             SmartDashboard.putNumber("Ambiguity", target.getPoseAmbiguity());
 
-                            results.add(robotPose);
+                            results.add(Pair.of(robotPose, result.getTimestampSeconds()));
                         }
 
 

@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.localization.Localization;
@@ -34,6 +35,10 @@ public class SwerveSubsystem extends LoggedSubsystem {
     private Rotation2d targetAngle = new Rotation2d();
 
     private Localization localization;
+
+    //test
+    private double testXpos;
+    private final Timer timer;
 
     public SwerveSubsystem(Localization locatization) {
         double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(
@@ -57,6 +62,9 @@ public class SwerveSubsystem extends LoggedSubsystem {
         this.localization = locatization;
 
         setupPathPlanner();
+
+        timer = new Timer();
+        timer.start();
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative)
@@ -122,7 +130,29 @@ public class SwerveSubsystem extends LoggedSubsystem {
     }
 
     public void driveRotations(double rotations) {
-        swerveDrive.getModules()[0].getDriveMotor().getPosition();
+        swerveDrive.getModules()[0].getDriveMotor().setPosition(rotations);
+    }
+
+    public void prePeriodic(int counter) {
+        double dt = timer.get();
+//        if(counter % 10 == 0) {
+//            System.out.println("Swerve dt @ " + counter + ": " + dt);
+//        }
+        testXpos += getOdoVel().vxMetersPerSecond * dt;
+        timer.restart();
+
+        SmartDashboard.putNumber("Drive motor pos", swerveDrive.getModules()[0].getDriveMotor().getPosition() / (4 * Math.PI * 0.0254));
+        SmartDashboard.putNumber("Odo pose x", getOdoPose().getX());
+        SmartDashboard.putNumber("Test odo pose x", testXpos);
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+    }
+
+    public void resetTestOdoPose(){
+        testXpos = 0;
     }
 
     public Rotation2d getRotationCorrected() {

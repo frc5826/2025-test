@@ -33,8 +33,8 @@ public final class Constants
         public static final double cMaxVelocity = 5.05968; //DON'T CHANGE!!!!!!!!!!!!!!!!!!!!!!!
         public static final double cMaxAngularVelocity = 5;
 
-        public static final PIDConstants cDrivePID = new PIDConstants(0.25, 0, 0);
-        public static final PIDConstants cTurnPID = new PIDConstants(4, 0, .4);
+        public static final PIDConstants cDrivePID = new PIDConstants(1, 0, 0);
+        public static final PIDConstants cTurnPID = new PIDConstants(4, 0, 0);
     }
 
     public static class Elevator {

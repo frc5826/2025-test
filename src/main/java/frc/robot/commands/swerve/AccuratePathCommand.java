@@ -64,7 +64,8 @@ public class AccuratePathCommand extends LoggedCommand {
 //        System.out.println("Y deadband: " + pidY.getDeadband());
 //        System.out.println("R deadband: " + pidR.getDeadband());
 
-        ChassisSpeeds speeds = new ChassisSpeeds(pidX.getOutput(), pidY.getOutput(), pidR.getOutput());
+        //TODO fix spin
+        ChassisSpeeds speeds = new ChassisSpeeds(pidX.getOutput(), pidY.getOutput(), MathHelper.fixSpin(pidR.getOutput()));
         swerveSubsystem.driveFieldOriented(speeds);
 
         if (Math.abs(pidX.getError()) <= pidX.getDeadband() && Math.abs(pidY.getError()) <= pidY.getDeadband() && Math.abs(pidR.getError()) <= pidR.getDeadband()) {

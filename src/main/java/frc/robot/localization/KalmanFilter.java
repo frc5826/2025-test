@@ -16,7 +16,7 @@ import java.util.List;
 class KalmanFilter {
 
     private RealVector x; //Initial means
-    private RealMatrix P;//Initial covariances
+    private RealMatrix P; //Initial covariances
 
     private RealMatrix Q; //Movement covariance of the process noise
 
@@ -32,7 +32,7 @@ class KalmanFilter {
         this.x = MatrixUtils.createRealVector(initial.getMeans());
         this.P = initial.getCovariances();
 
-        this.moveVar = new Variances(0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
+        this.moveVar = new Variances(0.1, 0.01, 0.1, 0.1, 0.1, 0.1);
 
         this.Q = MatrixUtils.createRealMatrix(new double[][]{
                 //X pos variance
@@ -105,5 +105,13 @@ class KalmanFilter {
 
     public RealMatrix getP() {
         return P;
+    }
+
+    public void setX(RealVector x) {
+        this.x = x;
+    }
+
+    public void setP(RealMatrix P) {
+        this.P = P;
     }
 }

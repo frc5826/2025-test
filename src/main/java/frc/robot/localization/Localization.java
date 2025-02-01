@@ -1,10 +1,13 @@
 package frc.robot.localization;
 
+import com.google.errorprone.annotations.Var;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -31,24 +34,32 @@ public class Localization {
 
     private final Timer timer;
 
+    private FilterBuffer buffer;
+
     private Field2d field;
 
     public Localization() {
         kalmanFilter = new KalmanFilter(new MultivariateNormalDistribution(new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0}, initCovar()));
 
-        this.measVar = new Variances(0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
+        this.measVar = new Variances(2, 0.4, 2, 2, 0.4, 2);
 
         cameras = new CameraSystem();
 
         timer = new Timer();
 
+        buffer = new FilterBuffer(25, 0.02);
+
         field = new Field2d();
         setupField();
     }
 
-    public void move() {
-        kalmanFilter.move(timer.get());
+    public void move(int counter) {
+        double dt = timer.get();
         timer.restart();
+//        if(counter % 10 == 0) {
+//            System.out.println("Localization dt @ " + counter + ": " + dt);
+//        }
+        kalmanFilter.move(dt);
     }
 
     public void measure(SwerveSubsystem s) {
@@ -82,20 +93,14 @@ public class Localization {
 
         ROdo.setEntry(2, 2, measVar.rPos());
 
-        //cameras.getCameraMeasurements();
-
-        for(Pose3d p: cameras.getCameraMeasurements()) {
-            double ambiguity = cameras.getPoseAmbiguity();
-
-            zOdo.setEntry(0, p.getX());
-            zOdo.setEntry(1, p.getY());
-
-            ROdo.setEntry(0, 0, ambiguity);
-            ROdo.setEntry(1, 1, ambiguity);
-
-            zOdo.setEntry(2, p.getRotation().getZ());
-
-            ROdo.setEntry(2, 2, ambiguity);
+        for(var p: cameras.getCameraMeasurements()) {
+            try {
+                if (p.getSecond() > 10) {
+                    addVisionMeasurement(p.getFirst(), p.getSecond());
+                }
+            } catch (Exception e) {
+                System.err.println(p.getSecond());
+            }
         }
 
         //for all you readings...
@@ -104,7 +109,53 @@ public class Localization {
             // enter pos in z
             // variance (r) comes from confidence of the april tag
 
+        buffer.addSnapshot(new FilterSnapshot(WPIUtilJNI.now() / 1000000.0, kalmanFilter.getX(), zOdo, ROdo));
+
         kalmanFilter.measure(ROdo, zOdo);
+    }
+
+    private void addVisionMeasurement(Pose3d p, double time) {
+        var snapshotPair = buffer.getSnapshot(time);
+
+        if (snapshotPair.isPresent()) {
+            FilterSnapshot snapshot = snapshotPair.get().getFirst();
+            int index = snapshotPair.get().getSecond();
+
+            RealVector z = snapshot.z();
+            RealMatrix R = snapshot.R();
+
+            z.setEntry(0, p.getX());
+            z.setEntry(1, p.getY());
+
+            R.setEntry(0, 0, measVar.xyPos());
+            R.setEntry(1, 1, measVar.xyPos());
+
+            z.setEntry(2, p.getRotation().getZ());
+
+            R.setEntry(2, 2, measVar.rPos());
+
+            kalmanFilter.setX(snapshot.x());
+            kalmanFilter.setP(snapshot.R());
+
+            kalmanFilter.measure(R, z);
+
+            FilterSnapshot[] replay = buffer.getReplay(index);
+
+            kalmanFilter.move(replay[0].time() - snapshot.time());
+
+            if(index > 0)
+                for (int i = 0; i+1 < index; i++) {
+                    buffer.addSnapshot(
+                            new FilterSnapshot(replay[i].time(),
+                                    kalmanFilter.getX(),
+                                    replay[i].z(),
+                                    replay[i].R()),
+                            index - i);
+                    kalmanFilter.measure(replay[i].R(), replay[i].z());
+                    kalmanFilter.move(replay[i+1].time() - replay[i].time());
+                }
+        }
+
 
     }
 

@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.LoggedCommand;
 import frc.robot.math.MathHelper;
@@ -31,6 +32,8 @@ public class PathToCommand extends LoggedCommand {
 
     private Command pathCommand;
 
+    private boolean finished;
+
     public PathToCommand(Pose2d pose, double endVel, PathConstraints constraints, SwerveSubsystem swerveSubsystem) {
         this.swerveSubsystem = swerveSubsystem;
 
@@ -48,7 +51,10 @@ public class PathToCommand extends LoggedCommand {
         Pose2d start = swerveSubsystem.getLocalizationPose();
         start = new Pose2d(start.getTranslation(), MathHelper.getAngleAtoB(start, goal));
 
-        Pose2d end = new Pose2d(goal.getTranslation(), MathHelper.getAngleAtoB(goal, start));
+        Pose2d end = new Pose2d(goal.getTranslation(), MathHelper.getAngleAtoB(start, goal));
+
+        SmartDashboard.putNumber("test/start", start.getRotation().getDegrees());
+        SmartDashboard.putNumber("test/goal", end.getRotation().getDegrees());
 
         List<Waypoint> points = PathPlannerPath.waypointsFromPoses(start, end);
 
@@ -62,7 +68,13 @@ public class PathToCommand extends LoggedCommand {
 
         pathCommand = AutoBuilder.followPath(path);
 
-        pathCommand.initialize();
+
+        try {
+            pathCommand.initialize();
+        } catch(Exception e) {
+            finished = true;
+            System.err.println("Start: " + start + "\nEnd: " + end);
+        }
     }
 
     @Override
@@ -70,16 +82,20 @@ public class PathToCommand extends LoggedCommand {
         super.execute();
 
         pathCommand.execute();
+
+        finished = pathCommand.isFinished();
     }
 
     @Override
     public boolean isFinished() {
-        return pathCommand.isFinished();
+        return finished;
     }
 
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
+
+        finished = false;
 
         pathCommand.end(interrupted);
     }

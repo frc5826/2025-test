@@ -13,7 +13,7 @@ public class Scratch {
 
         Localization localization = new Localization();
 
-        localization.move();
+//        localization.move();
         //localization.measure(1, 1, 1);
 
     }
