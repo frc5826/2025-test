@@ -83,7 +83,6 @@ public class CameraSystem {
                             results.add(Pair.of(robotPose, result.getTimestampSeconds()));
                         }
 
-
                     }
                 }
 

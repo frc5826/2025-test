@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -67,7 +68,7 @@ public class Localization {
         RealMatrix ROdo = kalmanFilter.getP().copy();
 
         Optional<Translation3d> accelOptional = s.getAcc();
-        if(accelOptional.isPresent()){
+        if (accelOptional.isPresent()) {
             zOdo.setEntry(6, accelOptional.get().getX());
             zOdo.setEntry(7, accelOptional.get().getY());
 
@@ -93,24 +94,23 @@ public class Localization {
 
         ROdo.setEntry(2, 2, measVar.rPos());
 
-        for(var p: cameras.getCameraMeasurements()) {
+        for (var p : cameras.getCameraMeasurements()) {
             try {
                 if (p.getSecond() > 10) {
                     addVisionMeasurement(p.getFirst(), p.getSecond());
                 }
             } catch (Exception e) {
-                System.err.println(p.getSecond());
+                e.printStackTrace();
             }
         }
 
         //for all you readings...
 
-            // copy z and r like above
-            // enter pos in z
-            // variance (r) comes from confidence of the april tag
+        // copy z and r like above
+        // enter pos in z
+        // variance (r) comes from confidence of the april tag
 
-        buffer.addSnapshot(new FilterSnapshot(WPIUtilJNI.now() / 1000000.0, kalmanFilter.getX(), zOdo, ROdo));
-
+        buffer.addSnapshot(new FilterSnapshot(NetworkTablesJNI.now() / 1000000.0, kalmanFilter.getX(), zOdo, ROdo));
         kalmanFilter.measure(ROdo, zOdo);
     }
 
@@ -120,6 +120,8 @@ public class Localization {
         if (snapshotPair.isPresent()) {
             FilterSnapshot snapshot = snapshotPair.get().getFirst();
             int index = snapshotPair.get().getSecond();
+
+            System.out.println("index: " + index);
 
             RealVector z = snapshot.z();
             RealMatrix R = snapshot.R();
@@ -139,21 +141,22 @@ public class Localization {
 
             kalmanFilter.measure(R, z);
 
-            FilterSnapshot[] replay = buffer.getReplay(index);
-
-            kalmanFilter.move(replay[0].time() - snapshot.time());
-
-            if(index > 0)
-                for (int i = 0; i+1 < index; i++) {
-                    buffer.addSnapshot(
-                            new FilterSnapshot(replay[i].time(),
-                                    kalmanFilter.getX(),
-                                    replay[i].z(),
-                                    replay[i].R()),
-                            index - i);
-                    kalmanFilter.measure(replay[i].R(), replay[i].z());
-                    kalmanFilter.move(replay[i+1].time() - replay[i].time());
-                }
+//            if (index > 0) {
+//                FilterSnapshot[] replay = buffer.getReplay(index);
+//
+//                kalmanFilter.move(replay[0].time() - snapshot.time());
+//
+//                for (int i = 0; i + 1 < replay.length; i++) {
+//                    buffer.addSnapshot(
+//                            new FilterSnapshot(replay[i].time(),
+//                                    kalmanFilter.getX(),
+//                                    replay[i].z(),
+//                                    replay[i].R()),
+//                            replay.length - i);
+//                    kalmanFilter.measure(replay[i].R(), replay[i].z());
+//                    kalmanFilter.move(replay[i + 1].time() - replay[i].time());
+//                }
+//            }
         }
 
 
@@ -179,16 +182,16 @@ public class Localization {
 
         field = new Field2d();
         tab.add(field)
-                .withPosition(2,0)
-                .withSize(5,3);
+                .withPosition(2, 0)
+                .withSize(5, 3);
 
         ShuffleboardLayout position = tab.getLayout("Robot position", BuiltInLayouts.kList)
-                .withPosition(0,0)
-                .withSize(2,2);
+                .withPosition(0, 0)
+                .withSize(2, 2);
 
-        position.addDouble("Robot X", ()-> getPose().getX());
-        position.addDouble("Robot Y", ()-> getPose().getY());
-        position.addDouble("Robot rotation", ()-> getPose().getRotation().getDegrees());
+        position.addDouble("Robot X", () -> getPose().getX());
+        position.addDouble("Robot Y", () -> getPose().getY());
+        position.addDouble("Robot rotation", () -> getPose().getRotation().getDegrees());
     }
 
     private static double[][] initCovar() {
