@@ -27,7 +27,7 @@ public class ElevatorSubsystem extends LoggedSubsystem {
         SmartDashboard.putData("elevator/Controller", controller);
         SparkMaxConfig config = new SparkMaxConfig();
         config.follow(motor);
-        motorFollower.setInverted(true);
+        motor.setInverted(true);
         motorFollower.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
     }
@@ -43,14 +43,14 @@ public class ElevatorSubsystem extends LoggedSubsystem {
     public void setDesiredPosition(double position) {
 
         position = Math.clamp(position, cElevatorHeightMin, cElevatorHeightMax);
-        controller.setGoal(getPos(), position, motor.getEncoder().getVelocity()*cElevatorToMotorConversion);
+        controller.setGoal(getPos(), position, motor.getEncoder().getVelocity()* cElevatorRPMtoMPS);
 
     }
 
 
     public double getPos(){
 
-        return encoder.get()/cElevatorToEncoderConversion;
+        return encoder.get()/ cElevatorClicksPerMeter;
 
     }
 
