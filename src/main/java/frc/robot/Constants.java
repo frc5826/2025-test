@@ -97,5 +97,9 @@ public final class Constants
 
     }
 
+    public static final double cLOFRejectionValue = 1;
+    public static final int cLOFk = 2;
+    public static final int cLOFTagLimit = 20;
+
 }
 

@@ -3,15 +3,13 @@ package frc.robot.vision;
 import com.revrobotics.spark.config.LimitSwitchConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.math.filter.FilterLOF2D;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -22,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import static frc.robot.Constants.*;
+
 public class CameraSystem {
 
 
@@ -30,6 +30,8 @@ public class CameraSystem {
     private final List<Camera> cameras;
     private DoubleLogEntry xLog, yLog, rotationLog, ambiguityLog;
 
+    private FilterLOF2D filter;
+    private LinkedList<Pose3d> tagLog;
 
     public CameraSystem() {
 
@@ -52,11 +54,16 @@ public class CameraSystem {
         rotationLog = new DoubleLogEntry(log, "/robot/vision/position/rotation");
         ambiguityLog = new DoubleLogEntry(log, "/robot/vision/ambiguity");
 
+        filter = new FilterLOF2D(cLOFk);
+
+        tagLog = new LinkedList<>();
+
     }
 
     public List<Pose3d> getCameraMeasurements() {
 
         LinkedList<Pose3d> results = new LinkedList<>();
+        LinkedList<Pose3d> filteredResults = new LinkedList<>();
 
         for (Camera camera : cameras) {
 
@@ -80,13 +87,19 @@ public class CameraSystem {
                             SmartDashboard.putNumber("Ambiguity", target.getPoseAmbiguity());
 
                             results.add(robotPose);
+                            tagLog.add(robotPose);
+                            if (tagLog.size() > cLOFTagLimit) {tagLog.removeFirst();}
                         }
-
 
                     }
                 }
 
             }
+        }
+
+        for (Pose3d possible : results){
+            double factor = filter.LOF(possible, tagLog);
+            if (factor <= cLOFRejectionValue) {filteredResults.add(possible);}
         }
 
         return results;
