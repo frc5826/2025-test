@@ -102,7 +102,7 @@ public class CameraSystem {
             if (factor <= cLOFRejectionValue) {filteredResults.add(possible);}
         }
 
-        return results;
+        return filteredResults;
 
     }
 
